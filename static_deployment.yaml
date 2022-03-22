@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy-html
+  labels:
+    app: caddy-html
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caddy-html
+  template:
+    metadata:
+      labels:
+        app: caddy-html
+    spec:
+      containers:
+      - name: caddy
+        image: caddy:2.4.6-alpine
+        command: ["caddy"]
+        args: ["file-server", "--listen", ":21700", "--root", "/usr/share/caddy/graphql-documentation"]
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: source-volume
+          mountPath: "/usr/share/caddy/graphql-documentation"
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /index.html
+        imagePullPolicy: Always
+      volumes:
+      - name: tmpfs-1
+        emptyDir: {}
+      - name: source-volume
+        persistentVolumeClaim:
+          claimName: source-volume
+      nodeSelector:
+        kubernetes.io/hostname: minikube #kube-01
+      restartPolicy: "Always"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: source-volume
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  accessModes:
+  - ReadWriteOnce

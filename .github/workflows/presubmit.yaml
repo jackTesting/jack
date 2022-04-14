@@ -6,7 +6,7 @@ env:
 
 jobs:
   ci:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     container:
       image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/build:latest
       credentials:

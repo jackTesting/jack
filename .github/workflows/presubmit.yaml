@@ -14,4 +14,4 @@ jobs:
         password: ${{ secrets.RET_INFRA_SACCOUNT }}
     steps:
     - name: Checkout
-      run: "Hello World"
+      echo: "Hello World"

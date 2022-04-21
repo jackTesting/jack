@@ -9,7 +9,7 @@ env:
 
 jobs:
   hack-verify:
-    runs-on: edge-runner
+    runs-on: ubuntu-latest
     container:
       image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/build:latest
       credentials:

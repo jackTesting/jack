@@ -6,9 +6,9 @@ env:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: edge-runner
     container:
-      image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/bazel-build-tools:latest
+      image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/build:latest
       credentials:
         username: _json_key_base64
         password: ${{ secrets.RET_INFRA_SACCOUNT }}

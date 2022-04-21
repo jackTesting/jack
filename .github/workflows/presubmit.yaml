@@ -6,12 +6,7 @@ env:
 
 jobs:
   ci:
-    runs-on: edge-runner
-    container:
-      image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/build:latest
-      credentials:
-        username: _json_key_base64
-        password: ${{ secrets.RET_INFRA_SACCOUNT }}
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       run: echo Hello World

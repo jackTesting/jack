@@ -1,0 +1,38 @@
+name: presubmit
+on: [pull_request]
+
+env:
+  REPORT_DIR: tmp/junit
+
+jobs:
+  ci:
+    runs-on: edge-runner
+    container:
+      image: us-east1-docker.pkg.dev/ret-edge-pltf-preprod-infra/preprod/build:latest
+      credentials:
+        username: _json_key_base64
+        password: ${{ secrets.RET_INFRA_SACCOUNT }}
+    steps:
+    - name: Checkout
+      run: github-actions-clone-repo.sh
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Activate Service Account
+      run: |
+        gcloud auth list
+        gcloud config set account github-actions-runner@ret-edge-dev-infra.iam.gserviceaccount.com
+        gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
+    - name: GitHub authentication
+      run: |
+        echo "machine github.com" > "$HOME/.netrc"
+        echo "login ${{ secrets.EE_GITHUB_USER }}" >> ~/.netrc
+        echo "password ${{ secrets.EE_GITHUB_TOKEN }}" >> ~/.netrc
+    - run: just ci -commit-range=master..${{ github.head_ref }} -run-id=${{ github.run_id }}
+    - name: Collect JUnit Reports
+      if: ${{ always() }}
+      run: collect-bazel-test-reports.sh "${REPORT_DIR}"
+    - name: Upload JUnit Reports
+      if: ${{ always() }}
+      run: art "${{ env.REPORT_DIR }}"
+    - name: Post-Execution Cleanup
+      run: delete-repo.sh

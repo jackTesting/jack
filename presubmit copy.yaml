@@ -1,6 +1,5 @@
 name: presubmit
 on: [pull_request]
-asdfdsf
 env:
   REPORT_DIR: tmp/junit
 
